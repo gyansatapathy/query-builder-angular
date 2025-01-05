@@ -57,4 +57,8 @@ export class QueryBuilderComponent {
   submitQuery() {
     console.log('Submitted Query Groups:', this.queryGroups);
   }
+
+  removeGroup(number: number) {
+    this.queryGroups.splice(number, 1);
+  }
 }
