@@ -2,6 +2,7 @@
     <div class="query-group">
         <div style="display: flex; justify-content: space-between">
             <div>
+                {{ index }}
                 <label>Condition:</label>
                 <label>
                     <input type="radio" [(ngModel)]="group.condition" value="AND"> AND
@@ -13,49 +14,50 @@
             <div style="display: flex; gap: 5px">
                 <button type="button" (click)="addQuery()">Add Query</button>
                 <button type="button" (click)="addGroup()">Add Child Group</button>
+                <button type="button" *ngIf="index!== null && index > -1" (click)="removeGroup.emit(index)">Remove
+                    Group
+                </button>
             </div>
         </div>
 
         <div
                 cdkDropList
-                [cdkDropListData]="group.queries"
+                [cdkDropListData]="group.items"
                 (cdkDropListDropped)="onDropQuery($event)"
                 class="query-list"
         >
             <div
-                    *ngFor="let query of group.queries; let i = index"
+                    *ngFor="let item of group.items; let i = index"
                     cdkDrag
                     class="query-row"
             >
-                <select [(ngModel)]="query.field">
-                    <option value="Name">Name</option>
-                    <option value="Age">Age</option>
-                    <option value="City">City</option>
-                    <option value="BirthDate">Birth Date</option>
-                </select>
-
-                <select [(ngModel)]="query.operator">
-                    <option value="=">=</option>
-                    <option value="!=">!=</option>
-                    <option value=">">></option>
-                    <option value="<"><</option>
-                    <option value=">=">>=</option>
-                    <option value="<="><=</option>
-                </select>
-
-                <input [(ngModel)]="query.value" placeholder="Value" />
-
-                <button type="button" (click)="removeQuery(i)">Remove</button>
+                <ng-container *ngIf="item.type === 'condition'; else groupTemplate">
+                    <div class="field">
+                        <ng-container *ngTemplateOutlet="fieldTemplate; context: { $implicit: item }"></ng-container>
+                    </div>
+                    <select class="operator" [(ngModel)]="item.operator">
+                        <option value="=">=</option>
+                        <option value="!=">!=</option>
+                        <option value=">">></option>
+                        <option value="<"><</option>
+                        <option value=">=">>=</option>
+                        <option value="<="><=</option>
+                    </select>
+                    <div class="value">
+                        <ng-container *ngTemplateOutlet="valueTemplate; context: { $implicit: item }"></ng-container>
+                    </div>
+                    <button type="button" (click)="removeQuery(i)">Remove</button>
+                </ng-container>
+                <ng-template #groupTemplate>
+                    <app-query-group
+                            style="width: calc(100% - 15px)"
+                            [group]="item"
+                            [index]="i"
+                            (removeGroup)="removeSubGroup(i)"
+                            (dropQuery)="dropQuery.emit($event)"
+                    ></app-query-group>
+                </ng-template>
             </div>
         </div>
-
-        <ng-container class="query-group" *ngFor="let subGroup of group.subGroups; let subGroupIndex = index">
-            <app-query-group
-                    [group]="subGroup"
-                    [groupIndex]="subGroupIndex"
-                    (removeGroup)="removeSubGroup(subGroupIndex)"
-                    (dropQuery)="dropQuery.emit($event)"
-            ></app-query-group>
-        </ng-container>
     </div>
 </div>

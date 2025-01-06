@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { QueryGroup, Query } from '../query-builder.model';
+import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Group, Query } from '../query-builder.model';
 
 @Component({
   selector: 'app-query-group',
@@ -8,33 +8,41 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./query-group.component.scss']
 })
 export class QueryGroupComponent {
-  @Input() group: QueryGroup;
-  @Input() groupIndex: number;
+  @Input() group: Group;
+  @Input() index: number;
+  @Input() fieldTemplate: TemplateRef<any>;
+  @Input() valueTemplate: TemplateRef<any>;
   @Output() removeGroup = new EventEmitter<number>();
-  @Output() dropQuery = new EventEmitter<CdkDragDrop<Query[]>>();
+  @Output() dropQuery = new EventEmitter<CdkDragDrop<string[]>>();
 
   addQuery() {
-    this.group.queries.push({ field: '', operator: '', value: '' });
-  }
-
-  removeQuery(queryIndex: number) {
-    this.group.queries.splice(queryIndex, 1);
+    const newQuery: Query = {
+      type: 'condition',
+      field: '',
+      operator: '',
+      value: ''
+    };
+    this.group.items.push(newQuery);
   }
 
   addGroup() {
-    this.group.subGroups.push({
+    const newGroup: Group = {
+      type: 'group',
       condition: 'AND',
-      queries: [],
-      subGroups: []
-    });
+      items: []
+    };
+    this.group.items.push(newGroup);
   }
 
-  removeSubGroup(subGroupIndex: number) {
-    this.group.subGroups.splice(subGroupIndex, 1);
+  removeQuery(index: number) {
+    this.group.items.splice(index, 1);
   }
 
-  onDropQuery(event: CdkDragDrop<Query[]>) {
-    moveItemInArray(this.group.queries, event.previousIndex, event.currentIndex);
-    this.dropQuery.emit(event);
+  removeSubGroup(index: number) {
+    this.group.items.splice(index, 1);
+  }
+
+  onDropQuery(event: CdkDragDrop<(Query | Group)[]>) {
+    moveItemInArray(this.group.items, event.previousIndex, event.currentIndex);
   }
 }

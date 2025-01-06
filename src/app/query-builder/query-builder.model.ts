@@ -1,11 +1,12 @@
 export interface Query {
+  type: 'condition';
   field: string;
   operator: string;
   value: string;
 }
 
-export interface QueryGroup {
+export interface Group {
+  type: 'group';
   condition: 'AND' | 'OR';
-  queries: Query[];
-  subGroups: QueryGroup[];
+  items: (Query | Group)[];
 }

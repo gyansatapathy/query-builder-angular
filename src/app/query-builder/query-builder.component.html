@@ -2,11 +2,17 @@
   <h3>Query Builder</h3>
 
   <ng-container *ngFor="let group of queryGroups; let groupIndex = index">
-      <app-query-group
-              [group]="group"
-              [groupIndex]="groupIndex"
-              (removeGroup)="removeGroup(groupIndex, groupIndex)"
-      ></app-query-group>
+      <app-query-group [group]="group" [fieldTemplate]="fieldTemplate" [valueTemplate]="valueTemplate">
+          <ng-template #fieldTemplate let-item>
+              <select class="field" [(ngModel)]="item.field">
+                  <option value="CustomField1">Custom Field 1</option>
+                  <option value="CustomField2">Custom Field 2</option>
+              </select>
+          </ng-template>
+          <ng-template #valueTemplate let-item>
+              <input class="value" [(ngModel)]="item.value" placeholder="Custom Value" />
+          </ng-template>
+      </app-query-group>
   </ng-container>
 
   <button type="button" (click)="submitQuery()">Submit</button>
