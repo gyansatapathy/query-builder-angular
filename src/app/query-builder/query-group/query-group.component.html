@@ -1,0 +1,61 @@
+<div class="query-group-box">
+    <div class="query-group">
+        <div style="display: flex; justify-content: space-between">
+            <div>
+                <label>Condition:</label>
+                <label>
+                    <input type="radio" [(ngModel)]="group.condition" value="AND"> AND
+                </label>
+                <label>
+                    <input type="radio" [(ngModel)]="group.condition" value="OR"> OR
+                </label>
+            </div>
+            <div style="display: flex; gap: 5px">
+                <button type="button" (click)="addQuery()">Add Query</button>
+                <button type="button" (click)="addGroup()">Add Child Group</button>
+            </div>
+        </div>
+
+        <div
+                cdkDropList
+                [cdkDropListData]="group.queries"
+                (cdkDropListDropped)="onDropQuery($event)"
+                class="query-list"
+        >
+            <div
+                    *ngFor="let query of group.queries; let i = index"
+                    cdkDrag
+                    class="query-row"
+            >
+                <select [(ngModel)]="query.field">
+                    <option value="Name">Name</option>
+                    <option value="Age">Age</option>
+                    <option value="City">City</option>
+                    <option value="BirthDate">Birth Date</option>
+                </select>
+
+                <select [(ngModel)]="query.operator">
+                    <option value="=">=</option>
+                    <option value="!=">!=</option>
+                    <option value=">">></option>
+                    <option value="<"><</option>
+                    <option value=">=">>=</option>
+                    <option value="<="><=</option>
+                </select>
+
+                <input [(ngModel)]="query.value" placeholder="Value" />
+
+                <button type="button" (click)="removeQuery(i)">Remove</button>
+            </div>
+        </div>
+
+        <ng-container class="query-group" *ngFor="let subGroup of group.subGroups; let subGroupIndex = index">
+            <app-query-group
+                    [group]="subGroup"
+                    [groupIndex]="subGroupIndex"
+                    (removeGroup)="removeSubGroup(subGroupIndex)"
+                    (dropQuery)="dropQuery.emit($event)"
+            ></app-query-group>
+        </ng-container>
+    </div>
+</div>

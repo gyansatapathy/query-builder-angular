@@ -1,111 +1,15 @@
 <div class="query-builder">
-<h3>Query Builder</h3>
+  <h3>Query Builder</h3>
 
-<!-- Parent Group - Always Present -->
-<div class="query-group parent-group">
-  <h4>Parent Group</h4>
+  <ng-container *ngFor="let group of queryGroups; let groupIndex = index">
+      <app-query-group
+              [group]="group"
+              [groupIndex]="groupIndex"
+              (removeGroup)="removeGroup(groupIndex, groupIndex)"
+      ></app-query-group>
+  </ng-container>
 
-  <div
-    cdkDropList
-    [cdkDropListData]="queryGroups[0].queries"
-    (cdkDropListDropped)="dropQuery($event, 0)"
-    class="query-list"
-  >
-    <div
-      *ngFor="let query of queryGroups[0].queries; let i = index"
-      cdkDrag
-      class="query-row"
-    >
-      <select [(ngModel)]="query.field">
-        <option value="Name">Name</option>
-        <option value="Age">Age</option>
-        <option value="City">City</option>
-        <option value="BirthDate">Birth Date</option>
-      </select>
+  <button type="button" (click)="submitQuery()">Submit</button>
 
-      <select [(ngModel)]="query.operator">
-        <option value="=">=</option>
-        <option value="!=">!=</option>
-        <option value=">">></option>
-        <option value="<"><</option>
-        <option value=">=">>=</option>
-        <option value="<="><=</option>
-      </select>
-
-      <input [(ngModel)]="query.value" placeholder="Value" />
-
-      <button type="button" (click)="removeQuery(0, i)">Remove</button>
-    </div>
-  </div>
-
-  <button type="button" (click)="addQuery(0)">Add Query</button>
-
-  <div>
-    <label>Condition:</label>
-    <select [(ngModel)]="queryGroups[0].condition">
-      <option value="AND">AND</option>
-      <option value="OR">OR</option>
-    </select>
-  </div>
-
-  <button type="button" (click)="addGroup(0)">Add Child Group</button>
-</div>
-
-<!-- Other Groups -->
-<div
-  *ngFor="let group of queryGroups.slice(1); let groupIndex = index"
-  cdkDrag
-  class="query-group"
->
-  <h4>Group {{ groupIndex + 2 }}</h4>
-
-  <div
-    cdkDropList
-    [cdkDropListData]="group.queries"
-    (cdkDropListDropped)="dropQuery($event, groupIndex + 1)"
-    class="query-list"
-  >
-    <div
-      *ngFor="let query of group.queries; let i = index"
-      cdkDrag
-      class="query-row"
-    >
-      <select [(ngModel)]="query.field">
-        <option value="Name">Name</option>
-        <option value="Age">Age</option>
-        <option value="City">City</option>
-        <option value="BirthDate">Birth Date</option>
-      </select>
-
-      <select [(ngModel)]="query.operator">
-        <option value="=">=</option>
-        <option value="!=">!=</option>
-        <option value=">">></option>
-        <option value="<"><</option>
-        <option value=">=">>=</option>
-        <option value="<="><=</option>
-      </select>
-
-      <input [(ngModel)]="query.value" placeholder="Value" />
-
-      <button type="button" (click)="removeQuery(groupIndex + 1, i)">Remove</button>
-    </div>
-  </div>
-
-  <button type="button" (click)="addQuery(groupIndex + 1)">Add Query</button>
-
-  <div>
-    <label>Condition:</label>
-    <select [(ngModel)]="group.condition">
-      <option value="AND">AND</option>
-      <option value="OR">OR</option>
-    </select>
-  </div>
-
-  <button type="button" (click)="removeGroup(groupIndex + 1)">Remove Group</button>
-</div>
-
-<button type="button" (click)="submitQuery()">Submit</button>
-
-<pre>{{ queryGroups | json }}</pre>
+  <pre>{{ queryGroups | json }}</pre>
 </div>
