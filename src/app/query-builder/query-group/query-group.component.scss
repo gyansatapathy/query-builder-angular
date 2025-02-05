@@ -10,6 +10,16 @@
   margin-bottom: 10px;
 }
 
+.operator, .value{
+  width: 100%
+}
+
+::ng-deep{
+  .cdk-drag{
+    width: calc(100% - 20px);
+  }
+}
+
 .query-group {
   margin-bottom: 15px;
   border: 1px solid grey;

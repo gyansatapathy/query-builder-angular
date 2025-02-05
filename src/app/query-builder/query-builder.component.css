@@ -28,3 +28,7 @@
   opacity: 0.5;
   background: #ccc;
 }
+
+.field, .value {
+  width: 100%;
+}
